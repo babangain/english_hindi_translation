@@ -73,7 +73,7 @@ nohup fairseq-train --fp16 \
     --ddp-backend=no_c10d \
     --criterion label_smoothed_cross_entropy --label-smoothing 0.1 \
     --optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0 \
-    --lr 0.0005 --lr-scheduler inverse_sqrt --warmup-updates 5000 \
+    --lr 0.0005 --lr-scheduler inverse_sqrt --warmup-updates 5000 --disable-validation --valid-subset train \
     --max-tokens 4000 --update-freq 64  \
     --max-epoch 30 \
     --save-interval 10\
