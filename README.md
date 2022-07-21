@@ -46,6 +46,27 @@ fairseq-preprocess \
     --destdir $BINARY_DATA_DIR \
     --workers 20
 ```
+
+## Training
+```
+MODEL_DIR=models/$DATA_FOLDER_NAME
+mkdir -p $MODEL_DIR
+export CUDA_VISIBLE_DEVICES=5,6
+nohup fairseq-train --fp16 \
+    $BINARY_DATA_DIR \
+    --source-lang en --target-lang hi \
+    --arch transformer --log-interval  1  --log-format simple \
+    --dropout 0.2 --weight-decay 0.0 \
+    --share-all-embeddings \
+    --ddp-backend=no_c10d \
+    --criterion label_smoothed_cross_entropy --label-smoothing 0.1 \
+    --optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0 \
+    --lr 0.0005 --lr-scheduler inverse_sqrt --warmup-updates 5000 \
+    --max-tokens 4000 --update-freq 64  \
+    --max-epoch 30 \
+    --save-interval 10\
+    --save-dir $MODEL_DIR &
+```
 If you use the dataset, cite the paper that introduced it
 ```
 @misc{ramesh2021samanantar,
