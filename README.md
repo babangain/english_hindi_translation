@@ -27,8 +27,14 @@ cat $DATA_DIR/train.hi | $MOSES_DIR/scripts/tokenizer/lowercase.perl> $DATA_DIR/
 cat $DATA_DIR/qna.en | $MOSES_DIR/scripts/tokenizer/lowercase.perl> qna.lc.en
 
 ```
-## Learn Byte-pair Encoding
+## Learn Byte-pair Encoding (optional)
+This can take long. Instead use the following command to use the bpecode provided by us
+````
+cp bpecode $DATA_DIR/bpecode
 ```
+Otherwise, to learn bpecode, run the following
+```
+
 cat $DATA_DIR/train.lc.en $DATA_DIR/train.lc.hi qna.lc.en > all.lc
 $FASTBPE_DIR/fast learnbpe 50000 all.lc > $DATA_DIR/bpecode
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en $DATA_DIR/bpecode
