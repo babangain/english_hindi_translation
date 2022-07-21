@@ -1,5 +1,9 @@
 # English Hindi Translation
-
+## Clone and Navigate to this repo
+```
+git clone https://github.com/babangain/english_hindi_translation
+cd english_hindi_translation
+```
 ## Install Dependencies
 ```
 pip install pandas tqdm fairseq
@@ -29,7 +33,7 @@ cat $DATA_DIR/qna.en | $MOSES_DIR/scripts/tokenizer/lowercase.perl> qna.lc.en
 ```
 ## Learn Byte-pair Encoding (optional)
 This can take long. Instead use the following command to use the bpecode provided by us
-````
+```
 cp bpecode $DATA_DIR/bpecode
 ```
 Otherwise, to learn bpecode, run the following
