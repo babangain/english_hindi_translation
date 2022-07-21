@@ -1,8 +1,17 @@
 # English Hindi Translation
 
-## Downloading data for pre-training
+## Install Dependencies
 ```
 pip install pandas tqdm fairseq
+git clone https://github.com/moses-smt/mosesdecoder.git
+MOSES_DIR=mosesdecoder
+git clone https://github.com/glample/fastBPE.git
+g++ -std=c++11 -pthread -O3 fastBPE/main.cc -IfastBPE -o fast
+FASTBPE_DIR=fastBPE
+chmod +x $FASTBPE_DIR/fast
+```
+## Downloading data for pre-training
+```
 wget https://storage.googleapis.com/samanantar-public/V0.3/source_wise_splits.zip
 unzip source_wise_splits.zip
 mkdir -p data/samanantar
@@ -11,8 +20,7 @@ python combine_data_v2.py
 
 ## Pre-process the data
 ```
-git clone https://github.com/moses-smt/mosesdecoder.git
-MOSES_DIR=mosesdecoder
+
 DATA_FOLDER_NAME=samanantar
 DATA_DIR=data/$DATA_FOLDER_NAME
 cat $DATA_DIR/train.en | $MOSES_DIR/scripts/tokenizer/lowercase.perl> $DATA_DIR/train.lc.en
@@ -20,10 +28,7 @@ cat $DATA_DIR/train.hi | $MOSES_DIR/scripts/tokenizer/lowercase.perl> $DATA_DIR/
 ```
 ## Learn Byte-pair Encoding
 ```
-git clone https://github.com/glample/fastBPE.git
-g++ -std=c++11 -pthread -O3 fastBPE/main.cc -IfastBPE -o fast
-FASTBPE_DIR=fastBPE
-chmod +x $FASTBPE_DIR/fast
+
 $FASTBPE_DIR/fast learnbpe 50000 $DATA_DIR/train.lc.en  $DATA_DIR/train.lc.en > $DATA_DIR/bpecode
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en bpecode
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.hi $DATA_DIR/train.lc.hi bpecode
