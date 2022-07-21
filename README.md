@@ -28,9 +28,9 @@ cat $DATA_DIR/train.hi | $MOSES_DIR/scripts/tokenizer/lowercase.perl> $DATA_DIR/
 ## Learn Byte-pair Encoding
 ```
 
-$FASTBPE_DIR/fast learnbpe 50000 $DATA_DIR/train.lc.en  $DATA_DIR/train.lc.en > $DATA_DIR/bpecode
-$FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en bpecode
-$FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.hi $DATA_DIR/train.lc.hi bpecode
+$FASTBPE_DIR/fast learnbpe 50000 $DATA_DIR/train.lc.en  $DATA_DIR/train.lc.hi > $DATA_DIR/bpecode
+$FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en $DATA_DIR/bpecode
+$FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.hi $DATA_DIR/train.lc.hi $DATA_DIR/bpecode
 $FASTBPE_DIR/fast getvocab $DATA_DIR/train.bpe.en $DATA_DIR/train.bpe.hi > $DATA_DIR/vocab.en
 ```
 
