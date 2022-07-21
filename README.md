@@ -6,9 +6,8 @@ pip install pandas tqdm fairseq
 git clone https://github.com/moses-smt/mosesdecoder.git
 MOSES_DIR=mosesdecoder
 git clone https://github.com/glample/fastBPE.git
-g++ -std=c++11 -pthread -O3 fastBPE/main.cc -IfastBPE -o fast
-FASTBPE_DIR=fastBPE
-chmod +x $FASTBPE_DIR/fast
+g++ -std=c++11 -pthread -O3 fastBPE/fastBPE/main.cc -IfastBPE -o fastBPE/fast
+FASTBPE_DIR=fastBPE/fastBPE
 ```
 ## Downloading data for pre-training
 ```
