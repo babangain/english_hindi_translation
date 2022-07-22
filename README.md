@@ -35,6 +35,7 @@ cat $DATA_DIR/qna.en | $MOSES_DIR/scripts/tokenizer/lowercase.perl> qna.lc.en
 This can take long. Instead use the following command to use the bpecode provided by us
 ```
 cp bpecode $DATA_DIR/bpecode
+co vocab.en $DATA_DIR/vocab.en
 ```
 Otherwise, to learn bpecode, run the following
 ```
