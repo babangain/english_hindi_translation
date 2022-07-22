@@ -79,7 +79,7 @@ nohup fairseq-train --fp16 \
     --save-interval 10\
     --save-dir $MODEL_DIR &
 ```
-If you use the dataset, cite the paper that introduced it
+# References
 ```
 @misc{ramesh2021samanantar,
       title={Samanantar: The Largest Publicly Available Parallel Corpora Collection for 11 Indic Languages}, 
@@ -88,5 +88,69 @@ If you use the dataset, cite the paper that introduced it
       eprint={2104.05596},
       archivePrefix={arXiv},
       primaryClass={cs.CL}
+}
+```
+```
+@inproceedings{sennrich-etal-2016-neural,
+    title = "Neural Machine Translation of Rare Words with Subword Units",
+    author = "Sennrich, Rico  and
+      Haddow, Barry  and
+      Birch, Alexandra",
+    booktitle = "Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = aug,
+    year = "2016",
+    address = "Berlin, Germany",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P16-1162",
+    doi = "10.18653/v1/P16-1162",
+    pages = "1715--1725",
+}
+```
+```
+@inproceedings{koehn-etal-2007-moses,
+    title = "{M}oses: Open Source Toolkit for Statistical Machine Translation",
+    author = "Koehn, Philipp  and
+      Hoang, Hieu  and
+      Birch, Alexandra  and
+      Callison-Burch, Chris  and
+      Federico, Marcello  and
+      Bertoldi, Nicola  and
+      Cowan, Brooke  and
+      Shen, Wade  and
+      Moran, Christine  and
+      Zens, Richard  and
+      Dyer, Chris  and
+      Bojar, Ond{\v{r}}ej  and
+      Constantin, Alexandra  and
+      Herbst, Evan",
+    booktitle = "Proceedings of the 45th Annual Meeting of the Association for Computational Linguistics Companion Volume Proceedings of the Demo and Poster Sessions",
+    month = jun,
+    year = "2007",
+    address = "Prague, Czech Republic",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P07-2045",
+    pages = "177--180",
+}
+```
+```
+@inproceedings{ott-etal-2019-fairseq,
+    title = "fairseq: A Fast, Extensible Toolkit for Sequence Modeling",
+    author = "Ott, Myle  and
+      Edunov, Sergey  and
+      Baevski, Alexei  and
+      Fan, Angela  and
+      Gross, Sam  and
+      Ng, Nathan  and
+      Grangier, David  and
+      Auli, Michael",
+    booktitle = "Proceedings of the 2019 Conference of the North {A}merican Chapter of the Association for Computational Linguistics (Demonstrations)",
+    month = jun,
+    year = "2019",
+    address = "Minneapolis, Minnesota",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/N19-4009",
+    doi = "10.18653/v1/N19-4009",
+    pages = "48--53",
+    abstract = "fairseq is an open-source sequence modeling toolkit that allows researchers and developers to train custom models for translation, summarization, language modeling, and other text generation tasks. The toolkit is based on PyTorch and supports distributed training across multiple GPUs and machines. We also support fast mixed-precision training and inference on modern GPUs. A demo video can be found at https://www.youtube.com/watch?v=OtgDdWtHvto",
 }
 ```
