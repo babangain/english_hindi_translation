@@ -39,7 +39,7 @@ cp en_bn/vocab.en $DATA_DIR/vocab.en
 Otherwise, to learn bpecode, run the following
 ```
 
-cat $DATA_DIR/train.lc.en $DATA_DIR/train.lc.hi > all.lc
+cat $DATA_DIR/train.lc.en $DATA_DIR/train.lc.bn > all.lc
 $FASTBPE_DIR/fast learnbpe 50000 all.lc > $DATA_DIR/bpecode
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en $DATA_DIR/bpecode
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.bn $DATA_DIR/train.lc.bn $DATA_DIR/bpecode
@@ -51,7 +51,7 @@ $FASTBPE_DIR/fast getvocab $DATA_DIR/train.bpe.en $DATA_DIR/train.bpe.bn > $DATA
 BINARY_DATA_DIR=data_bin/$DATA_FOLDER_NAME
 mkdir -p $BINARY_DATA_DIR
 fairseq-preprocess \
-    --source-lang en --target-lang hi \
+    --source-lang en --target-lang bn \
     --joined-dictionary \
     --srcdict $DATA_DIR/vocab.en \
     --trainpref $DATA_DIR/train.bpe \
@@ -66,7 +66,7 @@ mkdir -p $MODEL_DIR
 export CUDA_VISIBLE_DEVICES=5,6
 nohup fairseq-train --fp16 \
     $BINARY_DATA_DIR \
-    --source-lang en --target-lang hi \
+    --source-lang en --target-lang bn \
     --arch transformer --log-interval  1  --log-format simple \
     --dropout 0.2 --weight-decay 0.0 \
     --share-all-embeddings \
@@ -84,7 +84,7 @@ nohup fairseq-train --fp16 \
 BINARY_DATA_DIR=~/scripts/chat_en_hi/data/data_bin/data/wmt20_chat
 OUTFILENAME=wmt20_baseline
 fairseq-generate $BINARY_DATA_DIR --batch-size 32 --path models/samanantar_en_bn/checkpoint_last.pt  --remove-bpe \
---beam 5 --source-lang en --target-lang hi --task translation >  $OUTFILENAME.txt
+--beam 5 --source-lang en --target-lang bn --task translation >  $OUTFILENAME.txt
 
 cat $OUTFILENAME.txt |grep ^H | sort -nr -k1.2 | cut -f3- | $MOSES_DIR/scripts/tokenizer/detokenizer.perl > $OUTFILENAME.bn 
 
