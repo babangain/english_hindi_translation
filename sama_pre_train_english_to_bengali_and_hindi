@@ -67,7 +67,7 @@ fairseq-train --fp16 \
     --decoder-langtok \
     --lang-dict "$lang_list" \
     --lang-pairs "$lang_pairs" \
-    --lang-dict $BINARY_DATA_DIR/dict.en.txt \
+    --lang-dict $DATA_DIR/langs.txt \
     --lang-pairs "$lang_pairs" \
     --criterion label_smoothed_cross_entropy --label-smoothing 0.1 \
     --optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0 --seed 42 \
