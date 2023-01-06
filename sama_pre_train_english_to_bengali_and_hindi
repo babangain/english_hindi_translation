@@ -7,7 +7,20 @@ cd data
 cat samanantar/train.lc.en samanantar/train.lc.hi samanantar_en_bn/train.lc.en samanantar_en_bn/train.lc.bn > sama_bn_hi/all.lc
 cd ..
 
-$FASTBPE_DIR/fast learnbpe 100000 all.lc > $DATA_DIR/bpecode
+$FASTBPE_DIR/fast learnbpe 60000 $DATA_DIR/all.lc > $DATA_DIR/bpecode
+
+DATA_DIR=data/$DATA_FOLDER_NAME.hi
+cp data/samanantar/train.lc.{en,hi} $DATA_DIR
+cp data/sama_bn_hi/bpecode $DATA_DIR
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en $DATA_DIR/bpecode
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.hi $DATA_DIR/train.lc.hi $DATA_DIR/bpecode
+
+DATA_DIR=data/$DATA_FOLDER_NAME.bn
+mkdir $DATA_DIR
+cp data/samanantar/train.lc.{en,bn} $DATA_DIR
+cp data/sama_bn_hi/bpecode $DATA_DIR
+$FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en $DATA_DIR/bpecode
+$FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.bn $DATA_DIR/train.lc.bn $DATA_DIR/bpecode
+
+
 $FASTBPE_DIR/fast getvocab $DATA_DIR/train.bpe.en $DATA_DIR/train.bpe.hi > $DATA_DIR/vocab.en
