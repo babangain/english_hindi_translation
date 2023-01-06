@@ -15,6 +15,16 @@ cp data/sama_bn_hi/bpecode $DATA_DIR
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en $DATA_DIR/bpecode
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.hi $DATA_DIR/train.lc.hi $DATA_DIR/bpecode
 
+BINARY_DATA_DIR=data_bin/$DATA_FOLDER_NAME.hi
+mkdir -p $BINARY_DATA_DIR
+fairseq-preprocess \
+    --source-lang en --target-lang hi \
+    --joined-dictionary \
+    --srcdict $DATA_DIR/vocab.en \
+    --trainpref $DATA_DIR/train.bpe \
+    --destdir $BINARY_DATA_DIR \
+    --workers 50
+    
 DATA_DIR=data/$DATA_FOLDER_NAME.bn
 mkdir $DATA_DIR
 cp data/samanantar/train.lc.{en,bn} $DATA_DIR
@@ -22,5 +32,47 @@ cp data/sama_bn_hi/bpecode $DATA_DIR
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en $DATA_DIR/bpecode
 $FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.bn $DATA_DIR/train.lc.bn $DATA_DIR/bpecode
 
+BINARY_DATA_DIR=data_bin/$DATA_FOLDER_NAME.bn
+DATA_DIR=data/$DATA_FOLDER_NAME.bn
+mkdir -p $BINARY_DATA_DIR
+fairseq-preprocess \
+    --source-lang en --target-lang bn \
+    --joined-dictionary \
+    --srcdict $DATA_DIR/vocab.en \
+    --trainpref $DATA_DIR/train.bpe \
+    --destdir $BINARY_DATA_DIR \
+    --workers 50
 
 $FASTBPE_DIR/fast getvocab $DATA_DIR/train.bpe.en $DATA_DIR/train.bpe.hi > $DATA_DIR/vocab.en
+
+lang_pairs="en-hi,en-bn"
+DATA_DIR=data/$DATA_FOLDER_NAME
+lang_list=$DATA_DIR/langs.txt
+BINARY_DATA_DIR=data_bin/$DATA_FOLDER_NAME
+
+MODEL_DIR=models/$DATA_FOLDER_NAME
+mkdir -p $MODEL_DIR
+export CUDA_VISIBLE_DEVICES=2,3
+fairseq-train --fp16 \
+    $BINARY_DATA_DIR \
+    --source-lang en --target-lang hi \
+    --task translation_multi_simple_epoch  \
+    --arch transformer --log-interval  1  --log-format simple \
+    --dropout 0.2  \
+    --share-all-embeddings \
+    --ddp-backend=no_c10d \
+    --sampling-method "temperature" \
+    --sampling-temperature 1.5 \
+    --encoder-langtok "src" \
+    --decoder-langtok \
+    --lang-dict "$lang_list" \
+    --lang-pairs "$lang_pairs" \
+    --lang-dict $BINARY_DATA_DIR/dict.en.txt \
+    --lang-pairs "$lang_pairs" \
+    --criterion label_smoothed_cross_entropy --label-smoothing 0.1 \
+    --optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0 --seed 42 \
+    --lr 0.0005 --lr-scheduler inverse_sqrt --warmup-updates 5000 --disable-validation --valid-subset train \
+    --max-tokens 4000 --update-freq 64  \
+    --max-epoch 30 \
+    --save-interval 10\
+    --save-dir $MODEL_DIR > $DATA_DIR/nohup_train.out &
