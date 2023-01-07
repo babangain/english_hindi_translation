@@ -52,10 +52,9 @@ BINARY_DATA_DIR=data_bin/$DATA_FOLDER_NAME
 
 MODEL_DIR=models/$DATA_FOLDER_NAME
 mkdir -p $MODEL_DIR
-export CUDA_VISIBLE_DEVICES=2,3
-fairseq-train --fp16 \
+export CUDA_VISIBLE_DEVICES=2
+nohup fairseq-train --fp16 \
     $BINARY_DATA_DIR \
-    --source-lang en --target-lang hi \
     --task translation_multi_simple_epoch  \
     --arch transformer --log-interval  1  --log-format simple \
     --dropout 0.2  \
@@ -68,7 +67,6 @@ fairseq-train --fp16 \
     --lang-dict "$lang_list" \
     --lang-pairs "$lang_pairs" \
     --lang-dict $DATA_DIR/langs.txt \
-    --lang-pairs "$lang_pairs" \
     --criterion label_smoothed_cross_entropy --label-smoothing 0.1 \
     --optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0 --seed 42 \
     --lr 0.0005 --lr-scheduler inverse_sqrt --warmup-updates 5000 --disable-validation --valid-subset train \
