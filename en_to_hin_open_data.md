@@ -1,6 +1,9 @@
 
 ## Pre-process the data
 ```
+cd data_check/public_data/en-hi
+python sep.py
+python rem_lang.py
 
 DATA_FOLDER_NAME=samanantar
 DATA_DIR=data/$DATA_FOLDER_NAME
