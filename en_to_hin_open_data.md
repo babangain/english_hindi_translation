@@ -4,29 +4,36 @@
 cd data_check/public_data/en-hi
 python sep.py
 python rem_lang.py
-
-DATA_FOLDER_NAME=samanantar
-DATA_DIR=data/$DATA_FOLDER_NAME
-cat $DATA_DIR/train.en | $MOSES_DIR/scripts/tokenizer/lowercase.perl> $DATA_DIR/train.lc.en
-cat $DATA_DIR/train.hi | $MOSES_DIR/scripts/tokenizer/lowercase.perl> $DATA_DIR/train.lc.hi
-cat $DATA_DIR/qna.en | $MOSES_DIR/scripts/tokenizer/lowercase.perl> qna.lc.en
-
+cd ../../combined
+cat ../public_data/en-hi/train.clean.{en,hi} ../{reviews,PD}/en-hi/{src-train.txt,tgt-train.txt} > all.txt
+cat ../public_data/en-hi/train.clean.en ../{reviews,PD}/en-hi/src-train.txt > all.en
+cat ../public_data/en-hi/train.clean.hi ../{reviews,PD}/en-hi/tgt-train.txt > all.hi
 ```
 ## Learn Byte-pair Encoding (optional)
 This can take long. Instead use the following command to use the bpecode provided by us
 ```
-cp en_hi/bpecode $DATA_DIR/bpecode
-cp en_hi/vocab.en $DATA_DIR/vocab.en
+cp en_hi/bpecode $DATA_DIR/bpecode_fk
+cp en_hi/vocab.en $DATA_DIR/vocab_fk.en
 ```
 Otherwise, to learn bpecode, run the following
 ```
-
-cat $DATA_DIR/train.lc.en $DATA_DIR/train.lc.hi qna.lc.en > all.lc
-$FASTBPE_DIR/fast learnbpe 50000 all.lc > $DATA_DIR/bpecode
-$FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.en $DATA_DIR/train.lc.en $DATA_DIR/bpecode
-$FASTBPE_DIR/fast applybpe $DATA_DIR/train.bpe.hi $DATA_DIR/train.lc.hi $DATA_DIR/bpecode
-$FASTBPE_DIR/fast getvocab $DATA_DIR/train.bpe.en $DATA_DIR/train.bpe.hi > $DATA_DIR/vocab.en
+DATA_DIR=.
+$FASTBPE_DIR/fast learnbpe 20000 all.txt > $DATA_DIR/bpecode_fk
+$FASTBPE_DIR/fast applybpe $DATA_DIR/all.bpe.en $DATA_DIR/all.en $DATA_DIR/bpecode_fk
+$FASTBPE_DIR/fast applybpe $DATA_DIR/all.bpe.hi $DATA_DIR/all.hi $DATA_DIR/bpecode_fk
+$FASTBPE_DIR/fast getvocab $DATA_DIR/all.bpe.en $DATA_DIR/all.bpe.hi > $DATA_DIR/vocab_fk.en
+cd ../..
 ```
+### Pre-process other parts
+DATA_FOLDER_NAME=combined_fk
+DATA_DIR=data/$DATA_FOLDER_NAME
+for SUBSET in test valid
+do
+  for LANG in en hi
+  do
+    $FASTBPE_DIR/fast applybpe $DATA_DIR/$SUBSET.bpe.$LANG $DATA_DIR/$SUBSET.$LANG $DATA_DIR/bpecode_fk
+  done
+done
 
 ## Binarize the data for faster training
 ```
@@ -35,8 +42,10 @@ mkdir -p $BINARY_DATA_DIR
 fairseq-preprocess \
     --source-lang en --target-lang hi \
     --joined-dictionary \
-    --srcdict $DATA_DIR/vocab.en \
-    --trainpref $DATA_DIR/train.bpe \
+    --srcdict $DATA_DIR/vocab_fk.en \
+    --trainpref $DATA_DIR/all.bpe \
+    --validpref $DATA_DIR/valid.bpe \
+    --testpref $DATA_DIR/test.bpe \
     --destdir $BINARY_DATA_DIR \
     --workers 20
 ```
@@ -45,7 +54,7 @@ fairseq-preprocess \
 ```
 MODEL_DIR=models/$DATA_FOLDER_NAME
 mkdir -p $MODEL_DIR
-export CUDA_VISIBLE_DEVICES=5,6
+export CUDA_VISIBLE_DEVICES=5
 nohup fairseq-train --fp16 \
     $BINARY_DATA_DIR \
     --source-lang en --target-lang hi \
@@ -55,11 +64,11 @@ nohup fairseq-train --fp16 \
     --ddp-backend=no_c10d \
     --criterion label_smoothed_cross_entropy --label-smoothing 0.1 \
     --optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0 --seed 42 \
-    --lr 0.0005 --lr-scheduler inverse_sqrt --warmup-updates 5000 --disable-validation --valid-subset train \
+    --lr 0.0005 --lr-scheduler inverse_sqrt --warmup-updates 2000 --disable-validation --valid-subset train \
     --max-tokens 4000 --update-freq 64  \
     --max-epoch 30 \
-    --save-interval 10\
-    --save-dir $MODEL_DIR &
+    --save-interval 5\
+    --save-dir $MODEL_DIR > $DATA_DIR/train_log.log &
 ```
 ## Generate 
 ```
