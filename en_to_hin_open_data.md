@@ -72,12 +72,11 @@ nohup fairseq-train --fp16 \
 ```
 ## Generate 
 ```
-BINARY_DATA_DIR=~/scripts/chat_en_hi/data/data_bin/data/wmt20_chat
-OUTFILENAME=wmt20_baseline
-fairseq-generate $BINARY_DATA_DIR --batch-size 32 --path models/samanantar/checkpoint_last.pt  --remove-bpe \
---beam 5 --source-lang en --target-lang hi --task translation >  $OUTFILENAME.txt
+OUTFILENAME=gen_temp
+fairseq-generate $BINARY_DATA_DIR --batch-size 32 --path $MODEL_DIR/checkpoint_best.pt  --remove-bpe \
+--beam 5 --source-lang en --target-lang hi --task translation --skip-invalid-size-inputs-valid-test >  $OUTFILENAME.txt
 
 cat $OUTFILENAME.txt |grep ^H | sort -nr -k1.2 | cut -f3- | $MOSES_DIR/scripts/tokenizer/detokenizer.perl > $OUTFILENAME.hi 
 
-cat $OUTFILENAME.hi | sacrebleu ~/scripts/chat_en_hi/data/data/wmt20_chat/test.hi  -m bleu ter
+cat $OUTFILENAME.hi | sacrebleu $DATA_DIR/test.hi  -m bleu ter
 
