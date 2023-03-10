@@ -64,10 +64,10 @@ nohup fairseq-train --fp16 \
     --ddp-backend=no_c10d \
     --criterion label_smoothed_cross_entropy --label-smoothing 0.1 \
     --optimizer adam --adam-betas '(0.9, 0.98)' --clip-norm 0.0 --seed 42 \
-    --lr 0.00005 --lr-scheduler inverse_sqrt --warmup-updates 4000 \
+    --lr 0.0005 --lr-scheduler inverse_sqrt --warmup-updates 4000 --warmup-init-lr 1e-07 -min-lr 1e-09 \
     --max-tokens 4000 --update-freq 6  \
     --max-update 100000 \
-    --save-interval 5\
+    --save-interval 5 --save-interval-updates  1000 --keep-interval-updates 20 \
     --save-dir $MODEL_DIR > $DATA_DIR/train_log.log &
 ```
 ## Generate 
