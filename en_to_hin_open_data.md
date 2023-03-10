@@ -67,7 +67,7 @@ nohup fairseq-train --fp16 \
     --lr 0.0005 --lr-scheduler inverse_sqrt --warmup-updates 4000 --warmup-init-lr 1e-07  \
     --max-tokens 4000 --update-freq 6  \
     --max-update 100000 \
-    --save-interval 5 --save-interval-updates  1000 --keep-interval-updates 20 \
+    --save-interval 5 --save-interval-updates  1000 --keep-interval-updates 20 --skip-invalid-size-inputs-valid-test \
     --save-dir $MODEL_DIR > $DATA_DIR/train_log.log &
 ```
 ## Generate 
