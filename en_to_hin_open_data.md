@@ -79,4 +79,35 @@ fairseq-generate $BINARY_DATA_DIR --batch-size 32 --path $MODEL_DIR/checkpoint_b
 cat $OUTFILENAME.txt |grep ^H | sort -nr -k1.2 | cut -f3- | $MOSES_DIR/scripts/tokenizer/detokenizer.perl > $OUTFILENAME.hi 
 
 cat $OUTFILENAME.hi | sacrebleu $DATA_DIR/test.hi  -m bleu ter
+```
+## Test - Questions - BPE (Added question marks)
+```
+FASTBPE_DIR=fastBPE
+DATA_FOLDER_NAME=questions_mark_bpe
+DATA_DIR=data/$DATA_FOLDER_NAME
+for SUBSET in test
+do
+  for LANG in en hi
+  do
+    $FASTBPE_DIR/fast applybpe $DATA_DIR/$SUBSET.bpe.$LANG $DATA_DIR/$SUBSET.$LANG $DATA_DIR/bpecode_fk
+  done
+done
+```
+```
+BINARY_DATA_DIR=data_bin/$DATA_FOLDER_NAME
+mkdir -p $BINARY_DATA_DIR
+fairseq-preprocess \
+    --source-lang en --target-lang hi \
+    --joined-dictionary \
+    --srcdict $DATA_DIR/vocab_fk.en \
+    --testpref $DATA_DIR/test.bpe \
+    --destdir $BINARY_DATA_DIR \
+    --workers 20
+```
+OUTFILENAME=gen_from_fk_combined
+fairseq-generate $BINARY_DATA_DIR --batch-size 32 --path models/combined_fk/checkpoint_best.pt  --remove-bpe \
+--beam 5 --source-lang en --target-lang hi --task translation --skip-invalid-size-inputs-valid-test >  $OUTFILENAME.txt
 
+cat $OUTFILENAME.txt |grep ^H | sort -nr -k1.2 | cut -f3- | $MOSES_DIR/scripts/tokenizer/detokenizer.perl > $OUTFILENAME.hi 
+
+cat $OUTFILENAME.hi | sacrebleu $DATA_DIR/test.hi  -m bleu ter
