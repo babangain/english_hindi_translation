@@ -52,7 +52,7 @@ fairseq-preprocess \
 
 ## Training
 ```
-MODEL_DIR=models/$DATA_FOLDER_NAME
+MODEL_DIR=models/$DATA_FOLDER_NAME.SORT
 mkdir -p $MODEL_DIR
 export CUDA_VISIBLE_DEVICES=5
 nohup fairseq-train --fp16 \
@@ -68,7 +68,7 @@ nohup fairseq-train --fp16 \
     --max-tokens 4000 --update-freq 6  \
     --max-update 100000 \
     --save-interval 5 --save-interval-updates  1000 --keep-interval-updates 20 --skip-invalid-size-inputs-valid-test \
-    --save-dir $MODEL_DIR > $DATA_DIR/train_log.log &
+    --save-dir $MODEL_DIR > $DATA_DIR/train_log_sort.log &
 ```
 ## Generate 
 ```
