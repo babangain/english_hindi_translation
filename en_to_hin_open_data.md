@@ -25,6 +25,7 @@ $FASTBPE_DIR/fast getvocab $DATA_DIR/all.bpe.en $DATA_DIR/all.bpe.hi > $DATA_DIR
 cd ../..
 ```
 ### Pre-process other parts
+```
 DATA_FOLDER_NAME=combined_fk
 DATA_DIR=data/$DATA_FOLDER_NAME
 for SUBSET in test valid
@@ -34,7 +35,7 @@ do
     $FASTBPE_DIR/fast applybpe $DATA_DIR/$SUBSET.bpe.$LANG $DATA_DIR/$SUBSET.$LANG $DATA_DIR/bpecode_fk
   done
 done
-
+```
 ## Binarize the data for faster training
 ```
 BINARY_DATA_DIR=data_bin/$DATA_FOLDER_NAME
@@ -72,7 +73,7 @@ nohup fairseq-train --fp16 \
 ```
 ## Generate 
 ```
-OUTFILENAME=gen_temp
+OUTFILENAME=gen_temp_sorted
 fairseq-generate $BINARY_DATA_DIR --batch-size 32 --path $MODEL_DIR/checkpoint_best.pt  --remove-bpe \
 --beam 5 --source-lang en --target-lang hi --task translation --skip-invalid-size-inputs-valid-test >  $OUTFILENAME.txt
 
